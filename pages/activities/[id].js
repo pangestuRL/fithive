@@ -1,7 +1,8 @@
 import axiosInstance from "@/lib/axiosInstance";
 import Navbar from "@/src/components/Navbar";
 import Footer from "@/src/components/footer";
-import { Mail } from "lucide-react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 export async function getServerSideProps(context) {
   const { id } = context.params;
@@ -25,8 +26,29 @@ export async function getServerSideProps(context) {
 }
 
 export default function ActivityDetailPage({ activity }) {
+  const router = useRouter();
+  const [formattedDate, setFormattedDate] = useState("");
+  const [formattedTime, setFormattedTime] = useState("");
+
   if (!activity) {
     return <div className="p-10 text-center">Activity tidak ditemukan.</div>;
+  }
+
+  useEffect(() => {
+    if (activity?.activity_date) {
+      const date = new Date(activity.activity_date);
+      setFormattedDate(date.toLocaleDateString("id-ID", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }));
+      setFormattedTime(`${activity.start_time?.slice(0, 5)} - ${activity.end_time?.slice(0, 5)}`);
+    }
+  }, [activity]);
+
+  const handleJoin = () => {
+    router.push(`/payment/${activity.id}`);
   }
 
   return (
@@ -41,15 +63,15 @@ export default function ActivityDetailPage({ activity }) {
           </div>
           <h2 className="text-white text-3xl font-bold tracking-wide">{activity.title}</h2>
           <div className="flex items-center -space-x-3 mt-4 mb-4">
-            {activity.participants.slice(0,5).map((participant, index) => (
+            {activity?.participants?.slice(0,5).map((participant, index) => (
               <img
                 key={index}
-                src={`https://ui-avatars.com/api/?name=${participant.user.name}&background=random`}
+                src={`https://ui-avatars.com/api/?name=${participant.user.name}&background=0E3B61&color=fff`}
                 alt={participant.user.name}
                 className="w-10 h-10 rounded-full border-2 border-white object-cover"
               />
             ))}
-            {activity.participants.length > 5 && (
+            {activity?.participants?.length > 5 && (
               <div className="w-10 h-10 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-sm font-semibold text-gray-600">
                 +{activity.participants.length - 5}
               </div>
@@ -74,16 +96,11 @@ export default function ActivityDetailPage({ activity }) {
             </p>
             <p className="text-gray-600">
               <span className="font-medium">📅 :</span>{" "}
-              {new Date(activity.activity_date).toLocaleDateString("id-ID", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
+              {formattedDate}
             </p>
             <p className="text-gray-600">
               <span className="font-medium">🕛 :</span>{" "}
-              {activity.start_time?.slice(0, 5)} - {activity.end_time?.slice(0, 5)}
+              {formattedTime}
             </p>
             <p className="text-gray-600">
               <span className="font-medium">💸 :</span> Rp.{" "}
@@ -110,7 +127,7 @@ export default function ActivityDetailPage({ activity }) {
                <span className="text-white text-base font-medium">/ peserta</span></p>
             <p className="text-white text-base font-medium pt-2 pl-4">Hanya menyediakan {activity.slot} slot</p>
             <div className="flex justify-center">
-              <button className="w-full m-4 bg-[#F4811F] hover:bg-amber-500 text-white justify-center font-semibold py-2 rounded-lg mb-6">Gabung Main</button>
+              <button onClick={handleJoin} className="w-full m-4 bg-[#F4811F] hover:bg-amber-500 text-white justify-center font-semibold py-2 rounded-lg mb-6">Gabung Main</button>
             </div>
             <div className="w-full h-px bg-gray-300"></div>
             <div className="flex ml-6 gap-2 mt-6">
@@ -118,22 +135,17 @@ export default function ActivityDetailPage({ activity }) {
               <div>
                 <p className="font-semibold text-white">Waktu & Tanggal</p>
                 <p className="text-white text-sm font-extralight">
-                {new Date(activity.activity_date).toLocaleDateString("id-ID", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+                {formattedDate}
                 </p>
                 <p className="text-white text-sm font-extralight">
-                  {activity.start_time?.slice(0, 5)} - {activity.end_time?.slice(0, 5)}
+                  {formattedTime}
                 </p>
               </div>
             </div>
             <div className="flex ml-6 gap-2 mt-2">
               <p>🔸</p>
               <div>
-                <p className="font-semibold text-white">Lapangan</p>
+                <p className="font-semibold text-white">Lokasi</p>
                 <p className="text-white text-sm font-extralight">{activity.address}</p>
               </div>
             </div>
@@ -149,8 +161,6 @@ export default function ActivityDetailPage({ activity }) {
               height="400"
               style={{ border: 0 }}
               src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3965.1188418891343!2d106.74067767499169!3d-6.378657193611667!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNsKwMjInNDMuMiJTIDEwNsKwNDQnMzUuNyJF!5e0!3m2!1sen!2sid!4v1746152529220!5m2!1sen!2sid">
-              allowFullScreen=""
-              loading="lazy"
             </iframe>
           </div>
         )}
