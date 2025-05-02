@@ -1,13 +1,12 @@
 import Link from 'next/link';
-import axios from 'axios';
+import axiosInstance from '@/lib/axiosInstance';
 import Footer from "@/src/components/footer";
 import Navbar from "@/src/components/Navbar";
 
+
 export async function getServerSideProps() {
     try {
-      const resp = await axios.get(
-        'https://sport-reservation-api-bootcamp.do.dibimbing.id/api/v1/sport-activities?per_page=100&page=1'
-      );
+      const resp = await axiosInstance.get('/sport-activities');
   
       const activities = resp?.data?.result?.data ?? [];
   
@@ -40,17 +39,28 @@ export default function ActivitiesPage({ activities }) {
                 </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {activities.map((activity) => (
-                <div key={activity.id} className="border rounded-lg p-4 shadow">
-                    <h2 className="text-xl font-semibold mb-2">{activity.title}</h2>
-                    <p className="text-gray-600 mb-2">📅{activity.activity_date}, {activity.start_time.slice(0,5)} - {activity.end_time.slice(0,5)}</p>
-                    <p className="text-gray-600 mb-2">Rp. {activity.price.toLocaleString('id-ID')}</p>
-                    <Link href={`/activities/${activity.id}`} className="text-blue-600 hover:underline">
-                        Lihat Detail
-                    </Link>
-                </div>
-                ))}
+              {activities.map((activity) => (
+                <Link
+                  key={activity.id}
+                  href={`/activities/${activity.id}`}
+                  className="block border rounded-2xl p-5 shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300 ease-in-out cursor-pointer bg-white"
+                >
+                  <h2 className="text-xl font-semibold mb-2">{activity.title}</h2>
+                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+                    <span>{activity.sport_category?.name || "Olahraga"}</span>
+                    <span>•</span>
+                    <span>Newbie - Beginner</span>
+                  </div>
+                  <p className="text-gray-600 mb-2">
+                    📅{activity.activity_date}, {activity.start_time.slice(0, 5)} - {activity.end_time.slice(0, 5)}
+                  </p>
+                  <p className="text-gray-600 mb-2">
+                    Rp. {activity.price.toLocaleString('id-ID')}
+                  </p>
+                </Link>
+              ))}
             </div>
+
         </div>
         <Footer/>
     </div>

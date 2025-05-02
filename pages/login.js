@@ -90,7 +90,7 @@ function Login () {
                 <div className="max-w-md mx-auto">
                     
                     <div>
-                        <h1 className="text-2xl font-semibold">Login</h1>
+                        <h1 className="text-2xl font-semibold">Sign In</h1>
                     </div>
                     {showSuccess && (
                         <div className="mt-2 p-3 bg-green-500 text-white flex justify-center rounded-md">

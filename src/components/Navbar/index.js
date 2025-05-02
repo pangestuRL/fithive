@@ -16,15 +16,6 @@ export default function Navbar() {
           />
         </Link>
       </div>
-
-      {/* <div className="flex items-center gap-20">
-        <Link href="#about" className="text-[#002D55] text-xl font-bold hover:underline">
-          ABOUT
-        </Link>
-        <Link href="activities" className="text-[#002D55] text-xl font-bold hover:underline">
-          ACTIVITY
-        </Link>
-      </div> */}
       <div className="flex items-center gap-8">
         <User className="text-white text-5xl bg-[#002D55] rounded-full" />
         <button className="bg-[#F4811F] text-[#002D55] text-xl px-4 py-1 rounded-md font-bold hover:bg-orange-700 hover:text-white">
