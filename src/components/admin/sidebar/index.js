@@ -10,7 +10,11 @@ export default function Sidebar() {
             <a href="#">Users</a>
           </li>
           <li className="mb-4 hover:bg-gray-700 p-2 rounded">
+<<<<<<< HEAD
             <a href="#">Settings</a>
+=======
+            <a href="/admin/transaction">Transaction</a>
+>>>>>>> admin
           </li>
           <li className="mb-4 hover:bg-gray-700 p-2 rounded">
             <a href="/admin/categories">Categories</a>
