@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import axiosInstance from "@/lib/axiosInstance";
 
 function Register () {
     const [name, setName] = useState("");
@@ -11,6 +12,9 @@ function Register () {
     const [role, setRole] = useState('user');
     const [message, setMessage] = useState("");
     const [errorEmail, setErrorEmail] = useState("");
+    const [errorName, setErrorName] = useState("");
+    const [errorPhone, setErrorPhone] = useState("");
+
     const [errorPassword, setErrorPassword] = useState("");
     const [showSuccess, setShowSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -20,6 +24,18 @@ function Register () {
     const isValidForm = () => {
         let isValid = true;
         
+        if (!name) {
+            setErrorName("name is required!");
+            isValid = false;
+        } else {
+            setErrorName("");
+        }
+        if (!phone) {
+            setErrorPhone("phone is required!");
+            isValid = false;
+        } else {
+            setErrorPhone("");
+        }
         if (!email) {
             setErrorEmail("email is required!");
             isValid = false;
@@ -46,22 +62,27 @@ function Register () {
 
     const handleChangeEmail = e => {
         setEmail(e.target.value);
+        setMessage("");
     }
 
     const handleChangePassword = e => {
         setPassword(e.target.value);
+        setMessage("");
     }
 
     const handleChangeName = e => {
         setName(e.target.value);
+        setMessage("");
     }
 
     const handleChangePhone = e => {
         setPhone(e.target.value);
+        setMessage("");
     }
 
     const handleChangePasswordRepeat = e => {
         setPasswordRepeat(e.target.value);
+        setMessage("");
     }
 
     const handleChangeRole = e => {
@@ -73,6 +94,8 @@ function Register () {
         let isValid = isValidForm();
         if (!isValid) {
             setTimeout(() => {
+                setErrorName("");
+                setErrorPhone("");
                 setErrorPassword("");
                 setErrorEmail("");
                 setErrorPasswordRepeat("");
@@ -84,9 +107,9 @@ function Register () {
         const payload = {
             name : name,
             email : email,
-            phone : phone,
+            phone_number : phone,
             password : password,
-            passwordRepeat : passwordRepeat,
+            c_password : passwordRepeat,
             role : role
         }
 
@@ -95,18 +118,15 @@ function Register () {
         setLoading(true);
 
         try {
-            const response = await axios.post('https://api-bootcamp.do.dibimbing.id/api/v1/register', payload, {
-                headers: {
-                    apiKey: 'w05KkI9AWhKxzvPFtXotUva-',
-                  },
-            }
-        );
+            const response = await axiosInstance.post('/register', payload);
         setShowSuccess(true);
-        setMessage('Registration successful!');
-        router.push('/login');
+        setMessage('Registrasi berhasil!');
+        setTimeout(() => {
+            router.push('/login');
+          }, 1000);
         } catch (error) {
             setShowSuccess(false);
-            setMessage(error.response?.data?.message || 'Registration failed!');
+            setMessage(error.response?.data?.message || 'Registrasi gagal!');
         } finally {
             setLoading(false);
         }
@@ -122,12 +142,12 @@ function Register () {
                     </div>
                     {showSuccess && (
                         <div className="mt-2 p-3 bg-green-500 text-white flex justify-center rounded-md">
-                        Register Berhasil
+                        {message || "Register Berhasil"}
                         </div>
                     )}
-                    {message && (
+                    {!showSuccess && message && (
                         <div className="mt-2 p-3 bg-red-800 text-white flex justify-center rounded-md">
-                        Register gagal
+                        {message || "Register gagal"}
                         </div>
                     )}
                     <div className="divide-y divide-gray-200">
@@ -148,6 +168,7 @@ function Register () {
                                 >
                                     Your Name
                                 </label>
+                                {errorName && <p className="text-red-500 text-sm mt-2">{errorName}</p>}
                             </div>
                             <div className="relative">
                                 <input
@@ -183,6 +204,7 @@ function Register () {
                                 >
                                     Phone Number
                                 </label>
+                                {errorPhone && <p className="text-red-500 text-sm mt-2">{errorPhone}</p>}
                             </div>
                             <div className="relative">
                                 <input
@@ -238,7 +260,7 @@ function Register () {
                                     <span 
                                         className="font-semibold text-gray-600 hover:underline focus:text-gray-800 focus:outline-none"
                                         onClick={() => router.push("/login")}>
-                                         Sign in
+                                         Sign In
                                     </span>
                                 </p>
                             </div>

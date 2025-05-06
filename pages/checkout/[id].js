@@ -3,6 +3,7 @@ import { useActivityStore } from "../../src/stores/activityStore";
 import Navbar from "@/src/components/Navbar";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 
 export default function CheckoutPage () {
@@ -12,6 +13,11 @@ export default function CheckoutPage () {
   const [formattedTime, setFormattedTime] = useState("");
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const [accountNumber, setAccountNumber] = useState("");
+
+  const [image, setImage] = useState(null); // Untuk menyimpan file gambar yang dipilih
+  const [imageUrl, setImageUrl] = useState(""); // Untuk menyimpan URL hasil upload
+  const [loading, setLoading] = useState(false); // Menandakan proses upload
 
   console.log("paymentMethods:", paymentMethods);
   useEffect(() => {
@@ -42,6 +48,7 @@ export default function CheckoutPage () {
 
   const handleConfirmOrder = async () => {
     if (!selectedPaymentMethod) return;
+    console.log(imageUrl);
 
     try {
       const response = await axiosInstance.post("/transaction/create", {
@@ -50,13 +57,78 @@ export default function CheckoutPage () {
       });
 
       console.log("Transaksi berhasil:", response.data);
-      router.push(`/profile`)
+      console.log(response.data.error);
+      if(response.data.error === false){
+        const transId = response.data.result.id;
+        console.log(transId);
+        //update proof url image
+        try {
+          const proofResp = await axiosInstance.post(`/transaction/update-proof-payment/${transId}`, {
+            proof_payment_url: imageUrl,
+          });
+          console.log(proofResp.data);
+
+          router.push(`/profile`);
+        }catch(error){
+
+        }
+        
+      }
+      
     } catch (error) {
       console.error("Gagal membuat transaksi:", error);
     }
   };
 
+
   if (!activity) return <p>Activity tidak ditemukan.</p>;
+
+  // Fungsi untuk menangani perubahan file yang dipilih
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file); // Menyimpan file yang dipilih ke state image
+    }
+  };
+
+  // Fungsi untuk meng-handle upload gambar
+  const handleUploadImage = async () => {
+    if (!image) {
+      alert("Please select an image file first!");
+      return;
+    }
+
+    setLoading(true); // Set loading true sebelum mengupload
+
+    const formData = new FormData();
+    formData.append("file", image); // Menambahkan file image ke form data
+
+    try {
+      // Panggil API untuk upload gambar
+      const response = await axios.post(
+        "https://sport-reservation-api-bootcamp.do.dibimbing.id/api/v1/upload-image", // Ganti dengan endpoint API yang sesuai
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", 
+            "Accept": "application/json",
+          },
+        }
+      );
+
+      if (!response.data.error) {
+        setImageUrl(response.data.result); // Menyimpan URL gambar yang diupload
+        alert("Image uploaded successfully!");
+      } else {
+        alert("Failed to upload image.");
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      alert("Failed to upload image.");
+    }
+
+    setLoading(false); // Set loading kembali false setelah proses selesai
+  };
 
   return (
     <div>
@@ -108,16 +180,56 @@ export default function CheckoutPage () {
             onChange={(e) => {
               const selected = paymentMethods.find(method => method.id === parseInt(e.target.value));
               setSelectedPaymentMethod(selected);
-            }}>
+
+              setAccountNumber(selected?.account_number ?? ""); 
+            }}
+          >
             <option value="">Pilih metode pembayaran</option>
             {paymentMethods.map((method) => (
-              <option key={method.id}  value={method.id} className="flex items-center gap-2 py-1">
-                <img src={method.image_url} alt={method.name} className="w-6 h-6 object-contain" />
-                <span>{method.name}</span>
+              <option key={method.id} value={method.id}>
+                {method.name}
               </option>
             ))}
           </select>
         </div>
+
+        {selectedPaymentMethod && (
+          <div>
+            <p className="mt-4">Silahkan upload bukti transfer ke :</p>
+            <div className="flex items-center"><img
+                src={selectedPaymentMethod.image_url}
+                alt={selectedPaymentMethod.name}
+                className="w-6 h-6 object-contain mr-2"
+              />
+              <span>{selectedPaymentMethod.virtual_account_number}</span>
+            </div>
+          </div>
+          
+        )}
+
+        {selectedPaymentMethod && accountNumber && (
+          <p className="mt-2 text-sm text-gray-600">
+            Nomor Rekening: <strong>{accountNumber}</strong>
+          </p>
+        )}
+
+        {/* Form untuk upload gambar */}
+        <div className="my-4">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="p-3 border rounded"
+          />
+        </div>
+
+        <button
+        onClick={handleUploadImage}
+        className="bg-blue-500 text-white p-2 rounded"
+        disabled={loading}
+      >
+        {loading ? "Uploading..." : "Upload Image"}
+      </button>
 
         <p className="text-xs text-gray-600 mt-2">
           Dengan mengklik tombol berikut,<br />
