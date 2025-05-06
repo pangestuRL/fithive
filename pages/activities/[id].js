@@ -3,6 +3,8 @@ import Navbar from "@/src/components/Navbar";
 import Footer from "@/src/components/footer";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useActivityStore } from "../../src/stores/activityStore";
 
 export async function getServerSideProps(context) {
   const { id } = context.params;
@@ -29,6 +31,7 @@ export default function ActivityDetailPage({ activity }) {
   const router = useRouter();
   const [formattedDate, setFormattedDate] = useState("");
   const [formattedTime, setFormattedTime] = useState("");
+  const { setActivity } = useActivityStore();
 
   if (!activity) {
     return <div className="p-10 text-center">Activity tidak ditemukan.</div>;
@@ -48,7 +51,8 @@ export default function ActivityDetailPage({ activity }) {
   }, [activity]);
 
   const handleJoin = () => {
-    router.push(`/payment/${activity.id}`);
+    setActivity(activity);
+    router.push(`/checkout/${activity.id}`);
   }
 
   return (
@@ -56,13 +60,13 @@ export default function ActivityDetailPage({ activity }) {
       <Navbar />
       <div className="px-20 pt-20 pb-10 md:px-20 py-14">
         <div className="w-full bg-[#0E3B61] py-14 pl-6">
-          <div className="flex items-center text-sm text-white mb-2">
+          <h2 className="text-white text-3xl font-bold tracking-wide">{activity.title}</h2>
+          <div className="flex items-center text-sm text-white mb-4 mt-2">
             <span className="bg-[#F4811F] text-white px-2 py-0.5 rounded-l">{activity.sport_category?.name || "Olahraga"}</span>
             <span className="bg-[#F4811F] text-white px-2 py-0.5">•</span>
             <span className="bg-[#F4811F] text-white px-2 py-0.5 rounded-r">Newbie - Beginner</span>
           </div>
-          <h2 className="text-white text-3xl font-bold tracking-wide">{activity.title}</h2>
-          <div className="flex items-center -space-x-3 mt-4 mb-4">
+          <div className="flex items-center -space-x-3 mt-3 mb-1">
             {activity?.participants?.slice(0,5).map((participant, index) => (
               <img
                 key={index}
@@ -164,6 +168,15 @@ export default function ActivityDetailPage({ activity }) {
             </iframe>
           </div>
         )}
+      </div>
+      <div>
+        <Image
+            src="/images/banner.png"
+            alt="event-banner"
+            width="1190"
+            height="700"
+            className="mx-20 mb-6 rounded-2xl"
+          />
       </div>
       <Footer />
     </div>

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import axiosInstance from '@/lib/axiosInstance';
 import Footer from "@/src/components/footer";
 import Navbar from "@/src/components/Navbar";
+import Image from "next/image";
 
 
 export async function getServerSideProps() {
@@ -60,8 +61,14 @@ export default function ActivitiesPage({ activities }) {
                 </Link>
               ))}
             </div>
-
         </div>
+        <Image
+          src="/images/banner.png"
+          alt="event-banner"
+          width="1190"
+          height="700"
+          className="mx-20 mb-6 rounded-2xl"
+        />
         <Footer/>
     </div>
     
