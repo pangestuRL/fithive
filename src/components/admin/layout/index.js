@@ -9,9 +9,9 @@ export default function Layout({children}){
     }, []);
 
     return(
-      <div className="flex">
-        <Sidebar />
+      <div className="flex min-h-screen bg-gray-100">
 
+        <Sidebar />
         {isClient && (
         <div className="flex-1 p-6">
           <div className="bg-white p-6 rounded-lg shadow-md">{children}</div>

@@ -2,8 +2,11 @@ import Footer from "@/src/components/footer";
 import Navbar from "@/src/components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
+import Cookies from "js-cookie";
 
 function Home () {
+  const token = Cookies.get('accessToken');
+
   return (
     <div>
       <Navbar/>
@@ -24,7 +27,7 @@ function Home () {
           Temukan Komunitas Olahraga di sini, Olahraga makin mudah dan menyenangkan!
           </p>
           <Link href="/activities" className="inline-block">
-            <button className="px-6 py-3 bg-orange-500 hover:bg-primary/80 text-white font-semibold rounded-3xl transition">
+            <button disabled={!token} className="px-6 py-3 bg-orange-500 hover:bg-primary/80 text-white font-semibold rounded-3xl transition">
               Gabung Sekarang
             </button>
           </Link>

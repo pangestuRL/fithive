@@ -1,7 +1,7 @@
 import {useState} from "react";
-import axios from "axios";
 import { useRouter } from 'next/router';
 import Cookies from "js-cookie";
+import axiosInstance from "@/lib/axiosInstance";
 
 function Login () {
     const [email, setEmail] = useState("");
@@ -45,6 +45,8 @@ function Login () {
     }
 
     const handleSignIn = async (e) => {
+        e.preventDefault();
+        setError(false);
         setLoading(true);
         let isValid = isValidForm();
 
@@ -53,6 +55,7 @@ function Login () {
                 setErrorPassword("");
                 setErrorEmail("");
               }, 500);
+              setLoading(false);
               return;
         }
         
@@ -63,19 +66,40 @@ function Login () {
             password : password,
         }
 
-        e.preventDefault();
         try{
-            const response = await axios.post('https://api-bootcamp.do.dibimbing.id/api/v1/login', payload, {
-                headers : {
-                    'apiKey' : 'w05KkI9AWhKxzvPFtXotUva-',
-                    
-                }
-            });
-            Cookies.set("accessToken", response.data.token, { expires: 1 });
-            setMessage(`Login berhasil: ${response.data.message}`);
-            router.push('/');
+            const response = await axiosInstance.post('/login', payload);
+            const token = response.data.data.token
+            console.log(response);
+            Cookies.set("accessToken", token, { expires: 1 });
+            axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            const meResponse = await axiosInstance.get('/me');
+            
+            const userRole = meResponse.data.data.role;
+            const userName = meResponse.data.data.name;
+            Cookies.set("userRole", userRole, { expires: 1 });
+            Cookies.set("userName", userName)
+
+            if (userRole === "admin") {
+                router.push("/admin");
+            } else {
+                router.push("/");
+            }
+
+            setError(false);
+            setMessage(`Login berhasil: ${response.message}`);
+            setShowSuccess(true);
+            setTimeout(() => {
+                setShowSuccess(false);
+                setMessage("");
+            }, 1000);
         } catch (error) {
-            setMessage('Login gagal : ${error.response?.data?.message || error.message}');
+            setError(true);
+            setMessage(`Login gagal : ${error.response?.message || error.message}`);
+
+            setTimeout(() => {
+                setError(false);
+                setMessage("");
+            }, 1000);
         } finally {
             setLoading(false);
           }
@@ -94,12 +118,12 @@ function Login () {
                     </div>
                     {showSuccess && (
                         <div className="mt-2 p-3 bg-green-500 text-white flex justify-center rounded-md">
-                        Login Berhasil
+                        Login Berhasil!
                         </div>
                     )}
                     {error && (
                         <div className="mt-2 p-3 bg-red-600 text-white flex justify-center rounded-md">
-                        incorrect email or password
+                        Incorrect email or password
                         </div>
 
                     )}

@@ -7,7 +7,7 @@ import Image from "next/image";
 
 export async function getServerSideProps() {
     try {
-      const resp = await axiosInstance.get('/sport-activities');
+      const resp = await axiosInstance.get('/sport-activities?per_page=100&page=1');
   
       const activities = resp?.data?.result?.data ?? [];
   
