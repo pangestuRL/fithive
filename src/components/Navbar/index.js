@@ -42,7 +42,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white shadow-md z-50 flex justify-between items-center py-4 px-6 md:px-20 font-saira">
+    <nav className="fixed top-0 mb-20 left-0 w-full bg-white shadow-md z-50 flex justify-between items-center py-4 px-6 md:px-20 font-saira">
       <div className="flex items-center gap-2">
         <Link href="/">
           <Image

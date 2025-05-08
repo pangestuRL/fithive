@@ -81,11 +81,11 @@ export default function ActivityDetailPage({ activity }) {
               </div>
             )}
           </div>
-          <span className="bg-white text-[#0E3B61] text-xs font-semibold px-3 py-1 rounded">
+          <span className="bg-white text-[#0E3B61] text-xs font-semibold px-3 rounded">
             {activity.participants.length}/{activity.slot} Bergabung
           </span>
         </div>
-        <div className="flex flex-wrap justify-between">
+        <div className="flex flex-wrap md:justify-between">
           <p className="font-semibold text-xl pl-6 pt-6">🧿 Tentang</p>
           <p className="pl-6 pt-6 text-gray-600">Aktivitas olahraga ini dirancang untuk memberikan pengalaman yang menyenangkan, menyehatkan, dan bermanfaat 
             bagi semua kalangan. Dengan fasilitas yang mendukung dan suasana yang nyaman, setiap sesi menjadi kesempatan 
