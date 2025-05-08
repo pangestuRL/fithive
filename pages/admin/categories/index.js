@@ -159,7 +159,7 @@ export default function Categories({
               category.id === updatedCategory.id ? updatedCategory : category
             )
           );
-          setIsModalOpen(false); // Close the modal
+          setIsModalOpen(false); 
           alert("Category "+editCategoryName+" updated successfully!");
         } catch (error) {
           console.log("Error updating category:", error);
@@ -167,18 +167,18 @@ export default function Categories({
     };
     
     const handleCancelEdit = () => {
-    setIsModalOpen(false); // Close the modal without saving changes
+    setIsModalOpen(false); 
     };
 
 
-    return(
+    return (
         <Layout>
             <h1 className="text-3xl font-bold mb-6">Manage Categories</h1>
-
-            <div className="mb-6">
+    
+            <div className="mb-6 flex items-center">
                 <input
                     type="text"
-                    value={newCategoryName} 
+                    value={newCategoryName}
                     onChange={(e) => setNewCategoryName(e.target.value)}
                     className="border p-2"
                     placeholder="New Category Name"
@@ -187,84 +187,99 @@ export default function Categories({
                     Add Category
                 </button>
             </div>
-
-            <ul>
-                {categories.length > 0 ? (
-                categories.map(
-                    (category) => (
-                        <li key={category.id} className="mb-4 flex items-center">
-                            <span className="flex-1">{category.name}</span>
-                            <button
-                                onClick={() => handleEditCategory(category)}
-                                className="bg-yellow-500 text-white p-2 ml-2"
-                            >
-                                Edit
-                            </button>
-                            <button
-                            onClick={() => handleDeleteCategory(category.id, category.name)}
-                            className="bg-red-500 text-white p-2 ml-2"
-                            >
-                            Delete
-                            </button>
-                        </li>
-                    )
-                )
-                ) : (
-                <p>No categories available.</p>
-                )}
-            </ul>
-
+    
+            <table className="min-w-full bg-white border border-gray-300">
+                <thead>
+                    <tr>
+                        <th className="border px-4 py-2">No</th>
+                        <th className="border px-4 py-2">Category Name</th>
+                        <th className="border px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {categories.length > 0 ? (
+                        categories.map((category, index) => (
+                            <tr key={category.id}>
+                                <td className="border px-4 py-2">{index + 1}</td>
+                                <td className="border px-4 py-2">{category.name}</td>
+                                <td className="border px-4 py-2">
+                                    <button
+                                        onClick={() => handleEditCategory(category)}
+                                        className="bg-yellow-500 text-white p-2 ml-2"
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        onClick={() => handleDeleteCategory(category.id, category.name)}
+                                        className="bg-red-500 text-white p-2 ml-2"
+                                    >
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="3" className="text-center border px-4 py-2">
+                                No categories available.
+                            </td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+    
             <div className="mt-6 flex justify-between">
                 <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage <= 1}
-                className="px-4 py-2 bg-blue-500 text-white disabled:bg-gray-400"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage <= 1}
+                    className="px-4 py-2 bg-blue-500 text-white disabled:bg-gray-400"
                 >
-                Previous
+                    Previous
                 </button>
-
+    
                 <span>
-                Page {page} of {totalPages}
+                    Page {page} of {totalPages}
                 </span>
-
+    
                 <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={page >= totalPages}
-                className="px-4 py-2 bg-blue-500 text-white disabled:bg-gray-400"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={page >= totalPages}
+                    className="px-4 py-2 bg-blue-500 text-white disabled:bg-gray-400"
                 >
-                Next
+                    Next
                 </button>
             </div>
-
+    
             {/* Modal Popup untuk Edit Kategori */}
             {isModalOpen && (
                 <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
-                <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-                    <h2 className="text-2xl mb-4">Edit Category</h2>
-                    <input
-                    type="text"
-                    value={editCategoryName}
-                    onChange={(e) => setEditCategoryName(e.target.value)}
-                    className="border p-2 mb-4 w-full"
-                    />
-                    <div className="flex justify-end">
-                    <button
-                        onClick={handleSaveEdit}
-                        className="bg-green-500 text-white p-2 ml-2"
-                    >
-                        Save Changes
-                    </button>
-                    <button
-                        onClick={handleCancelEdit}
-                        className="bg-gray-500 text-white p-2 ml-2"
-                    >
-                        Cancel
-                    </button>
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+                        <h2 className="text-2xl mb-4">Edit Category</h2>
+                        <input
+                            type="text"
+                            value={editCategoryName}
+                            onChange={(e) => setEditCategoryName(e.target.value)}
+                            className="border p-2 mb-4 w-full"
+                        />
+                        <div className="flex justify-end">
+                            <button
+                                onClick={handleSaveEdit}
+                                className="bg-green-500 text-white p-2 ml-2"
+                            >
+                                Save Changes
+                            </button>
+                            <button
+                                onClick={handleCancelEdit}
+                                className="bg-gray-500 text-white p-2 ml-2"
+                            >
+                                Cancel
+                            </button>
+                        </div>
                     </div>
-                </div>
                 </div>
             )}
         </Layout>
-    )
+    );
+    
 
 }

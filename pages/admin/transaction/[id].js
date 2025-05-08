@@ -26,7 +26,7 @@ export default function TransactionDetail() {
     }, [id]);
 
     const handleApproveStatus = async () => {
-        setLoading(true); // Set loading menjadi true saat proses update
+        setLoading(true);
     
         try {
           const response = await axiosInstance.post(`/transaction/update-status/${id}`,
@@ -46,7 +46,31 @@ export default function TransactionDetail() {
           alert("Failed to update status.");
         }
     
-        setLoading(false); // Set loading kembali menjadi false
+        setLoading(false); 
+    };
+
+    const handleRejectStatus = async () => {
+        setLoading(true);
+    
+        try {
+          const response = await axiosInstance.post(`/transaction/cancel/${id}`,
+            {
+              status: "cancelled", 
+            }
+          );
+    
+          setTransaction((prevTransaction) => ({
+            ...prevTransaction,
+            status: response.data.message,
+          }));
+    
+          alert("Status updated to Cancelled!");
+        } catch (error) {
+          console.error("Error updating status:", error);
+          alert("Failed to update status.");
+        }
+    
+        setLoading(false); 
     };
 
     return (
@@ -65,9 +89,18 @@ export default function TransactionDetail() {
                     <button
                     onClick={handleApproveStatus}
                     className="ml-4 bg-green-500 text-white p-2 rounded"
-                    disabled={loading} // Disable tombol saat sedang loading
+                    disabled={loading}
                     >
                     {loading ? "Approving..." : "Approve"}
+                    </button>
+                </div>
+                <div className="mt-6">
+                    <button
+                    onClick={handleRejectStatus}
+                    className="ml-4 bg-red-500 text-white p-2 rounded"
+                    disabled={loading}
+                    >
+                    {loading ? "Cancel..." : "Cancel"}
                     </button>
                 </div>
             </div>

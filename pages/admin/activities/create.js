@@ -25,7 +25,13 @@ export default function CreateActivity() {
   useEffect(() => {
     const fetchSportCategories = async () => {
       try {
-        const response = await axiosInstance.get("/sport-categories");
+        const response = await axiosInstance.get("/sport-categories",{
+          params: {
+            is_paginate: true,
+            per_page: 100,
+            page:1,
+          }
+        });
         setSportCategories(response.data.result.data);
       } catch (error) {
         console.error("Error fetching sport categories:", error);
@@ -34,7 +40,13 @@ export default function CreateActivity() {
 
     const fetchCities = async () => {
       try {
-        const response = await axiosInstance.get("/location/cities");
+        const response = await axiosInstance.get("/location/cities", {
+          params: {
+            is_paginate: true,
+            per_page: 10000,
+            page:1,
+          }
+        });
         setCities(response.data.result.data);
       } catch (error) {
         console.error("Error fetching cities:", error);

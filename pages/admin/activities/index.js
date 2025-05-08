@@ -11,7 +11,7 @@ export default function Activities() {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const response = await axiosInstance.get('/sport-activities');
+        const response = await axiosInstance.get('/sport-activities?per_page=100&page=1');
         const activities = response?.data?.result?.data ?? [];
         console.log(activities);
         setActivities(activities);
@@ -36,7 +36,8 @@ export default function Activities() {
         alert("Activity deleted successfully!");
         setLoading(true);
         const response = await axiosInstance.get("/sport-activities");
-        setActivities(response.data.result);
+        const activities = response?.data?.result?.data ?? [];
+        setActivities(activities);
         setLoading(false);
       } catch (error) {
         console.error("Error deleting activity:", error);
@@ -84,7 +85,7 @@ export default function Activities() {
                         Edit
                       </button>
                       <button
-                        // onClick={() => handleDelete(activity.id)}
+                        onClick={() => handleDelete(activity.id)}
                         className="bg-red-500 text-white p-2 rounded"
                       >
                         Delete
