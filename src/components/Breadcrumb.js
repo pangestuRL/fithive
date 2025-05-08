@@ -16,14 +16,14 @@ const Breadcrumb = () => {
         <nav className="text-sm mb-4 text-white">
             <ul className="flex space-x-2">
                 <li>
-                    <Link href={homeLink.href} className="hover:text-blue-600">
+                    <Link href={homeLink.href} className="hover:text-[#F4811F]">
                         {homeLink.label}
                     </Link>
                 </li>
                 {links.map((link, index) => (
                     <li key={index} className="flex items-center">
                         <span className="mx-2">/</span>
-                        <Link href={link.href} className="hover:text-blue-600">
+                        <Link href={link.href} className="hover:text-[#F4811F]">
                             {link.label}
                         </Link>
                     </li>

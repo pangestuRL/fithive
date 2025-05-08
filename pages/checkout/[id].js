@@ -4,6 +4,7 @@ import Navbar from "@/src/components/Navbar";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
+import Breadcrumb from "@/src/components/Breadcrumb";
 
 
 export default function CheckoutPage () {
@@ -15,9 +16,9 @@ export default function CheckoutPage () {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [accountNumber, setAccountNumber] = useState("");
 
-  const [image, setImage] = useState(null); // Untuk menyimpan file gambar yang dipilih
-  const [imageUrl, setImageUrl] = useState(""); // Untuk menyimpan URL hasil upload
-  const [loading, setLoading] = useState(false); // Menandakan proses upload
+  const [image, setImage] = useState(null); 
+  const [imageUrl, setImageUrl] = useState(""); 
+  const [loading, setLoading] = useState(false);
 
   console.log("paymentMethods:", paymentMethods);
   useEffect(() => {
@@ -61,7 +62,6 @@ export default function CheckoutPage () {
       if(response.data.error === false){
         const transId = response.data.result.id;
         console.log(transId);
-        //update proof url image
         try {
           const proofResp = await axiosInstance.post(`/transaction/update-proof-payment/${transId}`, {
             proof_payment_url: imageUrl,
@@ -83,30 +83,28 @@ export default function CheckoutPage () {
 
   if (!activity) return <p>Activity tidak ditemukan.</p>;
 
-  // Fungsi untuk menangani perubahan file yang dipilih
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(file); // Menyimpan file yang dipilih ke state image
+      setImage(file);
     }
   };
 
-  // Fungsi untuk meng-handle upload gambar
   const handleUploadImage = async () => {
     if (!image) {
       alert("Please select an image file first!");
       return;
     }
 
-    setLoading(true); // Set loading true sebelum mengupload
+    setLoading(true);
 
     const formData = new FormData();
-    formData.append("file", image); // Menambahkan file image ke form data
+    formData.append("file", image);
 
     try {
-      // Panggil API untuk upload gambar
       const response = await axios.post(
-        "https://sport-reservation-api-bootcamp.do.dibimbing.id/api/v1/upload-image", // Ganti dengan endpoint API yang sesuai
+        "https://sport-reservation-api-bootcamp.do.dibimbing.id/api/v1/upload-image",
+        
         formData,
         {
           headers: {
@@ -117,7 +115,7 @@ export default function CheckoutPage () {
       );
 
       if (!response.data.error) {
-        setImageUrl(response.data.result); // Menyimpan URL gambar yang diupload
+        setImageUrl(response.data.result);
         alert("Image uploaded successfully!");
       } else {
         alert("Failed to upload image.");
@@ -127,26 +125,28 @@ export default function CheckoutPage () {
       alert("Failed to upload image.");
     }
 
-    setLoading(false); // Set loading kembali false setelah proses selesai
+    setLoading(false);
+  };
+
+  const handleBack = () => {
+    router.back(); 
   };
 
   return (
-    <div>
+    <div className="mt-24">
       <Navbar/>
-      <div className="mx-20 mt-20">
-        <h2 className="pt-6 font-bold text-xl">Gabung Aktivitas Seru!</h2>
-        <p className="pt-2 text-gray-600">Segera lakukan konfirmasi registrasi aktivitas yang akan Kamu ikuti.
+      <button onClick={handleBack} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 ml-20">
+        Kembali
+      </button>
+      <div className="mb-10">
+        <h2 className="pt-6 font-bold text-xl text-center">Gabung Aktivitas Seru!</h2>
+        <p className="pt-2 text-gray-600 text-center">Segera lakukan konfirmasi registrasi aktivitas yang akan Kamu ikuti.
           <br/>Berikut detail pembayaran yang harus Kamu selesaikan:
         </p>
       </div>
       
-      
-
       <div className="max-w-sm mx-auto border rounded-xl p-4 shadow-lg">
         <div className="flex items-start space-x-2 mb-4">
-          <svg className="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M6 4l8 6-8 6V4z" clipRule="evenodd" />
-          </svg>
           <h2 className="font-bold text-lg">Rincian Biaya</h2>
         </div>
 
@@ -213,7 +213,6 @@ export default function CheckoutPage () {
           </p>
         )}
 
-        {/* Form untuk upload gambar */}
         <div className="my-4">
           <input
             type="file"
@@ -224,12 +223,12 @@ export default function CheckoutPage () {
         </div>
 
         <button
-        onClick={handleUploadImage}
-        className="bg-blue-500 text-white p-2 rounded"
-        disabled={loading}
-      >
-        {loading ? "Uploading..." : "Upload Image"}
-      </button>
+          onClick={handleUploadImage}
+          className="bg-blue-500 text-white p-2 rounded"
+          disabled={loading}
+        >
+          {loading ? "Uploading..." : "Upload Image"}
+        </button>
 
         <p className="text-xs text-gray-600 mt-2">
           Dengan mengklik tombol berikut,<br />

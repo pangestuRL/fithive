@@ -100,16 +100,18 @@ export default function ActivitiesPage({ activities, cities, sportCategories }) 
 
   return (
     <div>
-        {/* <Navbar/> */}
-        <Breadcrumb/>
-        <div className="px-20 pt-11 pb-10">
-            <div className="w-full bg-[#0E3B61] py-14 flex justify-center items-center my-7">
+        <Navbar/>
+        <div className="px-20 mt-9 pt-11 pb-10">
+          <div className="bg-[#0E3B61] p-4">
+          <Breadcrumb/>
+          </div>
+            <div className="w-full bg-[#0E3B61] pb-20 pt-10 flex justify-center items-center">
               <h2 className="text-white text-3xl font-bold tracking-wide">
                   ACTIVITY
               </h2>
             </div>
 
-            <form onSubmit={handleSearchSubmit} className="flex justify-center gap-5 mb-6">
+            <form onSubmit={handleSearchSubmit} className="flex justify-center gap-5 my-6">
               <div className="flex items-center gap-3">
                   <input
                       type="text"
