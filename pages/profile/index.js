@@ -3,6 +3,7 @@ import Navbar from "@/src/components/Navbar";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Breadcrumb from "@/src/components/Breadcrumb";
 
 export default function Profile (){
     const [transactions, setTransactions] = useState([]);
@@ -33,20 +34,19 @@ export default function Profile (){
     return (
         <div className="mx-20 mt-24">
         <Navbar />
+        <Breadcrumb/>
         <h1 className="text-3xl font-bold mb-6">User Profile</h1>
         
-      
         {loading ? (
           <p>Loading profile...</p>
         ) : (
             
         <div className="space-y-6">
-            {/* Card User Profile */}
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <h2 className="text-2xl font-semibold mb-4">User Info</h2>
                 <div className="flex items-center">
                 <img
-                    src={user?.avatar || "/images/avatar.png"} // Default avatar jika tidak ada
+                    src={user?.avatar || "/images/avatar.png"}
                     alt="User Avatar"
                     className="w-16 h-16 rounded-full mr-4"
                 />
@@ -56,12 +56,9 @@ export default function Profile (){
                 </div>
                 </div>
             </div>
-            {/* Card Section */}
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-2xl font-semibold mb-4">Transactions</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                {/* Pending Column */}
                 <div>
                   <h3 className="text-xl font-semibold text-yellow-600 mb-4">Pending</h3>
                   <div className="space-y-4">
@@ -82,7 +79,6 @@ export default function Profile (){
                       ))}
                   </div>
                 </div>
-                {/* Success Column */}
                 <div>
                   <h3 className="text-xl font-semibold text-green-600 mb-4">Success</h3>
                   <div className="space-y-4">

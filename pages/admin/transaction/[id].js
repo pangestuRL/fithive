@@ -37,7 +37,7 @@ export default function TransactionDetail() {
     
           setTransaction((prevTransaction) => ({
             ...prevTransaction,
-            status: response.data.message,
+            status: 'success',
           }));
     
           alert("Status updated to Success!");
@@ -61,7 +61,7 @@ export default function TransactionDetail() {
     
           setTransaction((prevTransaction) => ({
             ...prevTransaction,
-            status: response.data.message,
+            status: 'cancelled',
           }));
     
           alert("Status updated to Cancelled!");
@@ -79,30 +79,37 @@ export default function TransactionDetail() {
 
         {transaction ? (
             <div>
-            <p><strong>Invoice ID:</strong> {transaction.invoice_id}</p>
-            <p><strong>Amount:</strong> {transaction.total_amount}</p>
-            <p><strong>Status:</strong> {transaction.status}</p>
-            <p><strong>Date:</strong> {transaction.order_date}</p>
-            <p><strong>Title:</strong> {transaction.transaction_items?.sport_activities?.title}</p>
-            <p><strong>proof_payment_url:</strong> {transaction.proof_payment_url}</p>
-                <div className="mt-6">
-                    <button
-                    onClick={handleApproveStatus}
-                    className="ml-4 bg-green-500 text-white p-2 rounded"
-                    disabled={loading}
-                    >
-                    {loading ? "Approving..." : "Approve"}
-                    </button>
-                </div>
-                <div className="mt-6">
-                    <button
-                    onClick={handleRejectStatus}
-                    className="ml-4 bg-red-500 text-white p-2 rounded"
-                    disabled={loading}
-                    >
-                    {loading ? "Cancel..." : "Cancel"}
-                    </button>
-                </div>
+              <p><strong>Invoice ID:</strong> {transaction.invoice_id}</p>
+              <p><strong>Amount:</strong> {transaction.total_amount}</p>
+              <p><strong>Status:</strong> {transaction.status}</p>
+              <p><strong>Date:</strong> {transaction.order_date}</p>
+              <p><strong>Title:</strong> {transaction.transaction_items?.sport_activities?.title}</p>
+              <p>
+                <strong>proof_payment_url:</strong>{' '}
+                <a href={transaction.proof_payment_url} target="_blank" rel="noopener noreferrer">
+                  {transaction.proof_payment_url}
+                </a>
+              </p>
+              <div className="mt-2">
+                  <button
+                  onClick={handleApproveStatus}
+                  className="bg-green-500 hover:bg-green-300 text-white p-2 rounded"
+                  disabled={loading}
+                  >
+                  {loading ? "Approving..." : "Approve"}
+                  </button>
+                  <button
+                  onClick={handleRejectStatus}
+                  disabled={transaction.status !== 'pending'}
+                  className={`px-4 py-2 rounded ${
+                    transaction.status === 'pending'
+                      ? 'ml-4 bg-red-500 text-white hover:bg-red-300 cursor-pointer p-2 rounded'
+                      : 'ml-4 bg-slate-400 text-white p-2 rounded'
+                  }`}
+                  >
+                  {loading ? "Cancel..." : "Cancel"}
+                  </button>
+              </div>
             </div>
             
         ) : (

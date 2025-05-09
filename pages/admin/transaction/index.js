@@ -123,7 +123,7 @@ export default function Transaction() {
                                 </td>
                                 <td className="border px-4 py-2"> 
                                     <button
-                                        onClick={() => handleViewDetails(transaction.id)} // Redirect ke halaman detail
+                                        onClick={() => handleViewDetails(transaction.id)}
                                         className="bg-blue-500 text-white p-2"
                                     >
                                         View Details

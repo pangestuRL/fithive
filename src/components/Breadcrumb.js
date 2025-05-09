@@ -12,18 +12,23 @@ const Breadcrumb = () => {
 
     const homeLink = { label: 'Home', href: '/' };
 
+    const isProfilePage = router.pathname.includes('/profile');
+
     return (
-        <nav className="text-sm mb-4 text-white">
+        <nav className="text-sm mb-4">
             <ul className="flex space-x-2">
                 <li>
-                    <Link href={homeLink.href} className="hover:text-[#F4811F]">
+                    <Link href={homeLink.href} className={`hover:text-[#F4811F] ${isProfilePage ? 'text-[#0E3B61]' : 'text-white'}`}>
                         {homeLink.label}
                     </Link>
                 </li>
                 {links.map((link, index) => (
                     <li key={index} className="flex items-center">
                         <span className="mx-2">/</span>
-                        <Link href={link.href} className="hover:text-[#F4811F]">
+                        <Link 
+                            href={link.href} 
+                            className={`hover:text-[#F4811F] ${isProfilePage ? 'text-[#0E3B61]' : 'text-white'}`}
+                        >
                             {link.label}
                         </Link>
                     </li>

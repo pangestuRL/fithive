@@ -20,7 +20,6 @@ export default function CheckoutPage () {
   const [imageUrl, setImageUrl] = useState(""); 
   const [loading, setLoading] = useState(false);
 
-  console.log("paymentMethods:", paymentMethods);
   useEffect(() => {
     if (activity?.activity_date) {
       const date = new Date(activity.activity_date);
@@ -48,40 +47,48 @@ export default function CheckoutPage () {
   }, []);
 
   const handleConfirmOrder = async () => {
-    if (!selectedPaymentMethod) return;
-    console.log(imageUrl);
-
+    if (!selectedPaymentMethod) {
+      alert("Please select a payment method.");
+      return;
+    }
+  
+    console.log("Image URL before confirm order:", imageUrl);
+  
+    if (!imageUrl) {
+      alert("Please upload the payment proof image.");
+      return;
+    }
+  
     try {
       const response = await axiosInstance.post("/transaction/create", {
         sport_activity_id: activity.id,
         payment_method_id: selectedPaymentMethod.id,
       });
-
-      console.log("Transaksi berhasil:", response.data);
-      console.log(response.data.error);
-      if(response.data.error === false){
-        const transId = response.data.result.id;
-        console.log(transId);
+  
+      if (response?.data?.error === false) {
+        const transId = response?.data?.result?.id;
+        console.log("Transaction ID:", transId);
+  
         try {
           const proofResp = await axiosInstance.post(`/transaction/update-proof-payment/${transId}`, {
             proof_payment_url: imageUrl,
           });
-          console.log(proofResp.data);
-
+  
+          console.log("Proof uploaded:", proofResp.data);
           router.push(`/profile`);
-        }catch(error){
-
+        } catch (error) {
+          console.error("Failed to upload payment proof:", error);
+          alert("Failed to upload payment proof.");
         }
-        
+      } else {
+        console.error("Failed to create transaction:", response?.data?.message);
+        alert("Failed to create transaction.");
       }
-      
     } catch (error) {
-      console.error("Gagal membuat transaksi:", error);
+      console.error("Error creating transaction:", error);
+      alert("Failed to create transaction.");
     }
   };
-
-
-  if (!activity) return <p>Activity tidak ditemukan.</p>;
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -95,27 +102,30 @@ export default function CheckoutPage () {
       alert("Please select an image file first!");
       return;
     }
-
+  
     setLoading(true);
-
+  
     const formData = new FormData();
     formData.append("file", image);
-
+  
     try {
       const response = await axios.post(
         "https://sport-reservation-api-bootcamp.do.dibimbing.id/api/v1/upload-image",
-        
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data", 
+            "Content-Type": "multipart/form-data",
             "Accept": "application/json",
           },
         }
       );
-
+  
+      console.log("Image upload response:", response);
+  
       if (!response.data.error) {
         setImageUrl(response.data.result);
+        console.log("Image URL set:", response.data.result);
+  
         alert("Image uploaded successfully!");
       } else {
         alert("Failed to upload image.");
@@ -124,7 +134,7 @@ export default function CheckoutPage () {
       console.error("Error uploading image:", error);
       alert("Failed to upload image.");
     }
-
+  
     setLoading(false);
   };
 
@@ -138,8 +148,8 @@ export default function CheckoutPage () {
       <button onClick={handleBack} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 ml-20">
         Kembali
       </button>
-      <div className="mb-10">
-        <h2 className="pt-6 font-bold text-xl text-center">Gabung Aktivitas Seru!</h2>
+      <div className="mb-4">
+        <h2 className="font-bold text-xl text-center">Gabung Aktivitas Seru!</h2>
         <p className="pt-2 text-gray-600 text-center">Segera lakukan konfirmasi registrasi aktivitas yang akan Kamu ikuti.
           <br/>Berikut detail pembayaran yang harus Kamu selesaikan:
         </p>
@@ -195,25 +205,29 @@ export default function CheckoutPage () {
 
         {selectedPaymentMethod && (
           <div>
-            <p className="mt-4">Silahkan upload bukti transfer ke :</p>
-            <div className="flex items-center"><img
+            <p className="mt-4">Silahkan lakukan pembayaran ke rekening berikut:</p>
+            <div className="flex items-center gap-8"><img
                 src={selectedPaymentMethod.image_url}
                 alt={selectedPaymentMethod.name}
-                className="w-6 h-6 object-contain mr-2"
+                className="-inset-10 h-10 object-contain mr-2"
               />
-              <span>{selectedPaymentMethod.virtual_account_number}</span>
+              <div>
+                <p>{selectedPaymentMethod.virtual_account_number}</p>
+                <p>an/ {selectedPaymentMethod.virtual_account_name}</p>
+              </div>
+              
             </div>
           </div>
           
         )}
-
+        <p className="mt-4">Silahkan upload bukti pembayaran kamu:</p>
         {selectedPaymentMethod && accountNumber && (
           <p className="mt-2 text-sm text-gray-600">
             Nomor Rekening: <strong>{accountNumber}</strong>
           </p>
         )}
 
-        <div className="my-4">
+        <div className="mb-5">
           <input
             type="file"
             accept="image/*"
@@ -224,10 +238,10 @@ export default function CheckoutPage () {
 
         <button
           onClick={handleUploadImage}
-          className="bg-blue-500 text-white p-2 rounded"
-          disabled={loading}
+          className="bg-blue-500 text-white p-2 rounded disabled:bg-gray-400"
+          disabled={loading || imageUrl !== ""}
         >
-          {loading ? "Uploading..." : "Upload Image"}
+          {loading ? "Uploading..." : imageUrl ? "Uploaded" : "Upload Image"}
         </button>
 
         <p className="text-xs text-gray-600 mt-2">
@@ -239,8 +253,10 @@ export default function CheckoutPage () {
 
         <button 
           onClick={handleConfirmOrder}
-          className="mt-4 w-full bg-[#003c5e] text-white font-semibold py-2 rounded hover:bg-[#002c45]">
-          Konfirmasi
+          className="mt-4 w-full bg-[#003c5e] text-white font-semibold py-2 rounded hover:bg-[#002c45] disabled:bg-gray-400"
+          disabled={loading}
+        >
+          {loading ? "Memproses..." : "Konfirmasi"}
         </button>
       </div>
 

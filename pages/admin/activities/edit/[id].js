@@ -80,7 +80,6 @@ export default function EditActivity() {
     });
   };
 
-  // Fungsi untuk handle submit form (update activity)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -117,7 +116,6 @@ export default function EditActivity() {
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold mb-4">Activity Information</h2>
 
-        {/* Sport Category Dropdown */}
         <div className="mb-4">
           <label className="block text-lg mb-2">Sport Category</label>
           <select
@@ -154,7 +152,6 @@ export default function EditActivity() {
           </select>
         </div>
 
-        {/* Other Form Inputs */}
         <div className="mb-4">
           <label className="block text-lg mb-2">Title</label>
           <input

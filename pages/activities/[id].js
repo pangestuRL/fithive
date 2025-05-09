@@ -4,6 +4,7 @@ import Footer from "@/src/components/footer";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useActivityStore } from "../../src/stores/activityStore";
+import Breadcrumb from "@/src/components/Breadcrumb";
 
 export async function getServerSideProps(context) {
   const { id } = context.params;
@@ -58,7 +59,10 @@ export default function ActivityDetailPage({ activity }) {
     <div>
       <Navbar />
       <div className="px-6 md:px-20 pt-20 pb-10 md:py-14">
-        <div className="w-full bg-[#0E3B61] py-14 pl-6">
+        <div className="bg-[#0E3B61] p-4 mt-4">
+          <Breadcrumb/>
+        </div>
+        <div className="w-full bg-[#0E3B61] py-10 pl-6">
           <h2 className="text-white text-3xl font-bold tracking-wide">{activity.title}</h2>
           <div className="flex items-center text-sm text-white mb-4 mt-2">
             <span className="bg-[#F4811F] text-white px-2 py-0.5 rounded-l">{activity.sport_category?.name || "Olahraga"}</span>
@@ -88,7 +92,7 @@ export default function ActivityDetailPage({ activity }) {
         <div className="flex flex-wrap md:justify-between gap-6">
           <div className="md:w-2/3 md:item-center">
             <p className="font-semibold text-xl pt-6">🧿 Tentang</p>
-            <p className="pt-6 text-gray-600">
+            <p className="pt-6 text-gray-600 text-justify">
               Aktivitas olahraga ini dirancang untuk memberikan pengalaman yang menyenangkan, menyehatkan, dan bermanfaat 
               bagi semua kalangan. Dengan fasilitas yang mendukung dan suasana yang nyaman, setiap sesi menjadi kesempatan 
               sempurna untuk meningkatkan kebugaran, menjalin kebersamaan, dan mengisi waktu luang secara positif. Cocok 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axiosInstance";
 import { useRouter } from "next/router";
 import Layout from "@/src/components/admin/layout";
+import Cookies from "js-cookie";
 
 export default function AdminDashboard() {
     const [user, setUser] = useState(null);
@@ -24,9 +25,11 @@ export default function AdminDashboard() {
     }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem("authToken");
+        Cookies.remove("accessToken");
+        Cookies.remove("userName");
+        Cookies.remove("userRole");
         router.push("/login");
-    };
+      };
 
     if (loading) {
         return <p>Loading user data...</p>;
