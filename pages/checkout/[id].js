@@ -4,8 +4,6 @@ import Navbar from "@/src/components/Navbar";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-import Breadcrumb from "@/src/components/Breadcrumb";
-
 
 export default function CheckoutPage () {
   const router = useRouter();
@@ -142,6 +140,10 @@ export default function CheckoutPage () {
     router.back(); 
   };
 
+  if (!activity) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="mt-24">
       <Navbar/>
@@ -166,7 +168,8 @@ export default function CheckoutPage () {
           </div>
           <div className="flex justify-between font-medium">
             <span>Regular (x1)</span>
-            <span>Rp. {activity?.price ? activity.price.toLocaleString("id-ID") : "Harga Tidak Tersedia"}</span>
+            {/* Check if activity.price exists, and format it if available */}
+            <span>Rp. {activity?.price ? activity.price.toLocaleString("id-ID") : "Loading..."}</span>
           </div>
           <div className="flex justify-between">
             <span>Convenience Fee</span>
@@ -179,7 +182,8 @@ export default function CheckoutPage () {
           <hr className="my-2" />
           <div className="flex justify-between font-semibold">
             <span>Total Bayar</span>
-            <span>Rp.{" "}{activity.price?.toLocaleString("id-ID")}</span>
+            {/* Similarly handle the total price */}
+            <span>Rp. {activity?.price ? activity.price.toLocaleString("id-ID") : "Loading..."}</span>
           </div>
         </div>
 
