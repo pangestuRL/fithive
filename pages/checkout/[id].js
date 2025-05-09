@@ -166,7 +166,7 @@ export default function CheckoutPage () {
           </div>
           <div className="flex justify-between font-medium">
             <span>Regular (x1)</span>
-            <span>Rp.{" "}{activity.price?.toLocaleString("id-ID")}</span>
+            <span>Rp. {activity?.price ? activity.price.toLocaleString("id-ID") : "Harga Tidak Tersedia"}</span>
           </div>
           <div className="flex justify-between">
             <span>Convenience Fee</span>
