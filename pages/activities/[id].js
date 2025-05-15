@@ -32,6 +32,7 @@ export default function ActivityDetailPage({ activity }) {
   const [formattedDate, setFormattedDate] = useState("");
   const [formattedTime, setFormattedTime] = useState("");
   const { setActivity } = useActivityStore();
+  // const [token, setToken] = useState(null);
 
   if (!activity) {
     return <div className="p-10 text-center">Activity tidak ditemukan.</div>;
@@ -50,7 +51,19 @@ export default function ActivityDetailPage({ activity }) {
     }
   }, [activity]);
 
+  // useEffect(() => {
+  //   const storedToken = localStorage.getItem("token");
+  //   console.log(storedToken);
+  //   setToken(storedToken);
+  // }, []);
+
   const handleJoin = () => {
+    const token = localStorage.getItem("accessToken");
+    if(!token) {
+      alert('Please login first!');
+      router.push('/login');
+      return;
+    }
     setActivity(activity);
     router.push(`/checkout/${activity.id}`);
   }

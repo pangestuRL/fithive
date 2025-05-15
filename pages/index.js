@@ -2,23 +2,23 @@ import Footer from "@/src/components/footer";
 import Navbar from "@/src/components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
-import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axiosInstance";
+import Testimoni from "@/src/components/Testimoni";
 
 function Home() {
-  const token = Cookies.get("accessToken");
+  const [token, setToken] = useState(null);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const getCategoryImage = (categoryName) => {
     const categoryImages = {
-      "Mini Soccer": "/images/categories/mini-soccer.png",
+      "Mini Soccer": "/images/categories/mini-soccer.PNG",
       "Badminton": "/images/categories/badminton.jpeg",
-      "Baseball": "/images/categories/baseball.png",
+      "Baseball": "/images/categories/baseball.PNG",
       "Squash": "/images/categories/squash.jpg",
-      "Hockey": "/images/categories/hockey.png",
-      "Running": "/images/categories/running.png",
+      "Hockey": "/images/categories/Hockey.PNG",
+      "Running": "/images/categories/running.PNG",
       "Padel": "/images/categories/padel.jpg",
       "Tenis Meja": "/images/categories/tenis-meja.jpg",
       "Fitnes": "/images/categories/fitnes.jpg",
@@ -26,13 +26,16 @@ function Home() {
       "Bulu Tangkis": "/images/categories/badminton.jpeg",
       "panah": "/images/categories/panah.jpg",
       "Futsal": "/images/categories/futsal.jpg",
-      "Basketball": "/images/categories/basketball.png"
+      "Basketball": "/images/categories/basketball.PNG"
     };
 
     return categoryImages[categoryName] || "/images/categories/default.jpg";
   };
 
   useEffect(() => {
+    const storedToken = localStorage.getItem("accessToken");
+    setToken(storedToken);
+
     async function fetchCategories() {
       try {
         const response = await axiosInstance.get("/sport-categories");
@@ -69,9 +72,7 @@ function Home() {
           </p>
           <Link href="/activities" className="inline-block">
             <button
-              disabled={!token}
-              className="px-6 py-3 bg-orange-500 hover:bg-primary/80 text-white font-semibold rounded-3xl transition"
-            >
+              className='bg-orange-500 hover:bg-primary/80 text-white font-semibold rounded-3xl transition p-3'>
               Gabung Sekarang
             </button>
           </Link>
@@ -83,7 +84,7 @@ function Home() {
           <div className="w-[400px] flex justify-center">
             <div className="relative w-full h-80 md:h-[500px] rounded-lg overflow-hidden shadow-md">
               <Image
-                src="/images/lapangan.png"
+                src="/images/lapangan.PNG"
                 alt="Venue Hero"
                 fill
                 className="object-cover"
@@ -91,7 +92,7 @@ function Home() {
             </div>
           </div>
 
-          <div className="w-full md:w-1/2 text-gray-700 text-lg leading-relaxed space-y-6">
+          <div className="w-full md:w-1/2 text-gray-700 text-lg leading-relaxed space-y-6 text-justify">
             <p>
               <span className="font-bold">FitHive</span> adalah platform booking aktivitas olahraga yang dirancang untuk memudahkan kamu menemukan dan memesan kegiatan olahraga dengan cepat dan praktis dari olahraga favoritmu semua ada di ujung jari kamu.
             </p>
@@ -136,6 +137,7 @@ function Home() {
           </div>
         )}
       </section>
+      <Testimoni/>
       <Footer />
     </div>
   );

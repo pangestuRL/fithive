@@ -1,6 +1,5 @@
-import {useState} from "react";
+import {useState,useEffect} from "react";
 import { useRouter } from 'next/router';
-import Cookies from "js-cookie";
 import axiosInstance from "@/lib/axiosInstance";
 
 function Login () {
@@ -69,15 +68,14 @@ function Login () {
         try{
             const response = await axiosInstance.post('/login', payload);
             const token = response.data.data.token
-            console.log(response);
-            Cookies.set("accessToken", token, { expires: 1 });
+            localStorage.setItem("accessToken", token);
             axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             const meResponse = await axiosInstance.get('/me');
             
             const userRole = meResponse.data.data.role;
             const userName = meResponse.data.data.name;
-            Cookies.set("userRole", userRole, { expires: 1 });
-            Cookies.set("userName", userName)
+            localStorage.setItem("userRole", userRole);
+            localStorage.setItem("userName", userName)
 
             if (userRole === "admin") {
                 router.push("/admin");

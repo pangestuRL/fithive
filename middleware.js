@@ -27,5 +27,5 @@ export function middleware(request) {
 }
 
 export const config = {
-    matcher: ['/admin/:path*', '/dashboard/:path*', '/activities/:path*'], // tambahkan path yang ingin diproteksi
+    matcher: ['/admin/:path*', '/dashboard/:path*'],
   };

@@ -147,9 +147,12 @@ export default function CheckoutPage () {
   return (
     <div className="mt-24">
       <Navbar/>
-      <button onClick={handleBack} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 ml-20">
-        Kembali
-      </button>
+      <span
+        onClick={handleBack}
+        className="cursor-pointer text-black hover:underline ml-1 flex items-center gap-1 md:ml-20"
+      >
+        &lt; Kembali
+      </span>
       <div className="mb-4">
         <h2 className="font-bold text-xl text-center">Gabung Aktivitas Seru!</h2>
         <p className="pt-2 text-gray-600 text-center">Segera lakukan konfirmasi registrasi aktivitas yang akan Kamu ikuti.
