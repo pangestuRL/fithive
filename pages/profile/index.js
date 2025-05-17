@@ -6,6 +6,7 @@ import Image from "next/image";
 import Breadcrumb from "@/src/components/Breadcrumb";
 
 export default function Profile (){
+    const router = useRouter();
     const [transactions, setTransactions] = useState([]);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -14,9 +15,14 @@ export default function Profile (){
         try {
           const userResponse = await axiosInstance.get("/me");
           const transactionsResponse = await axiosInstance.get("/my-transaction"); 
-          console.log(userResponse);
+          const currentUser = userResponse.data.data;
+
+          if(currentUser.role === "admin"){
+            router.replace("/unauthorized");
+            return;
+          }
     
-          setUser(userResponse.data.data);
+          setUser(currentUser);
           setTransactions(transactionsResponse.data.result.data);
         } catch (error) {
           console.error("Error fetching profile data:", error);

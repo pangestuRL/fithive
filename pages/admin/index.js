@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axiosInstance";
 import { useRouter } from "next/router";
 import Layout from "@/src/components/admin/layout";
-import Cookies from "js-cookie";
 
 export default function AdminDashboard() {
     const [user, setUser] = useState(null);
@@ -11,12 +10,26 @@ export default function AdminDashboard() {
 
     useEffect(() => {
         const fetchUserData = async () => {
+            const token = localStorage.getItem("accessToken");
+
+            if(!token){
+                router.replace("/login");
+                return;
+            }
+
             try {
                 const response = await axiosInstance.get('/me');
-                setUser(response.data.data);
-                setLoading(false);
+                const userData = response.data.data;
+                
+                if(userData.role !== 'admin'){
+                    router.replace('/unauthorized');
+                    return;
+                }
+                setUser(userData);
             } catch (error) {
                 console.error("Error fetching user data:", error);
+                router.replace("/login");
+            } finally{
                 setLoading(false);
             }
         };
@@ -25,14 +38,18 @@ export default function AdminDashboard() {
     }, []);
 
     const handleLogout = () => {
-        Cookies.remove("accessToken");
-        Cookies.remove("userName");
-        Cookies.remove("userRole");
-        router.push("/login");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("userName");
+        localStorage.removeItem("userRole");
+        router.replace("/login");
       };
 
     if (loading) {
-        return <p>Loading user data...</p>;
+        return (
+        <div className="flex justify-center items-center h-screen">
+            <p className="text-xl font-semibold">Loading user data...</p>
+        </div>
+        );
     }
 
     return (

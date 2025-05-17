@@ -32,7 +32,7 @@ export default function ActivityDetailPage({ activity }) {
   const [formattedDate, setFormattedDate] = useState("");
   const [formattedTime, setFormattedTime] = useState("");
   const { setActivity } = useActivityStore();
-  // const [token, setToken] = useState(null);
+  const [userRole, setUserRole] = useState("");
 
   if (!activity) {
     return <div className="p-10 text-center">Activity tidak ditemukan.</div>;
@@ -51,11 +51,10 @@ export default function ActivityDetailPage({ activity }) {
     }
   }, [activity]);
 
-  // useEffect(() => {
-  //   const storedToken = localStorage.getItem("token");
-  //   console.log(storedToken);
-  //   setToken(storedToken);
-  // }, []);
+  useEffect(() => {
+    const role = localStorage.getItem("userRole");
+    setUserRole(role);
+  }, []);
 
   const handleJoin = () => {
     const token = localStorage.getItem("accessToken");
@@ -143,12 +142,22 @@ export default function ActivityDetailPage({ activity }) {
             <p className="font-bold text-2xl text-white">Rp. {activity.price?.toLocaleString("id-ID")} <span className="text-white text-base font-medium">/ peserta</span></p>
             <p className="text-white text-base font-medium pt-2">Hanya menyediakan {activity.slot} slot</p>
             <div className="flex justify-center">
-              <button
-                onClick={handleJoin}
-                className="w-full m-4 bg-[#F4811F] hover:bg-amber-500 text-white justify-center font-semibold py-2 rounded-lg mb-6"
-              >
-                Gabung Main
-              </button>
+              {userRole === "admin" ? (
+                <button
+                  disabled
+                  className="w-full m-4 bg-gray-400 text-white font-semibold py-2 rounded-lg mb-6 cursor-not-allowed"
+                  title="ADMIN tidak dapat bergabung pada aktivitas"
+                >
+                  Gabung Main
+                </button>
+              ) : (
+                <button
+                  onClick={handleJoin}
+                  className="w-full m-4 bg-[#F4811F] hover:bg-amber-500 text-white font-semibold py-2 rounded-lg mb-6"
+                >
+                  Gabung Main
+                </button>
+              )}
             </div>
             <div className="w-full h-px bg-gray-300"></div>
             <div className="flex ml-6 gap-2 mt-6">
